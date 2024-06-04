@@ -1,25 +1,36 @@
 import obd
+import threading
+import time
 
 conn = None
+timer: int = 2
 
-# 30 main params from OBD-II interface
-listOfParams = ['RPM', 'SPEED', 'INTAKE_TEMP', 'THROTTLE_POS']  # TODO: research
 # scratch - using mode01
 
 returnedParamsValues = []  # this is then stored in the db
 
 # Connect to the OBD-II interface
+
+
+def threading_obd():
+    while(True):
+        time.sleep(5)
+        print("Shabang")
+
+def threading_obd_2():
+    while(True):
+        time.sleep(2)
+        print("TITITIT")
+
 def connect():
     # Connect to the OBD-II interface
     global conn
-
     conn = obd.OBD(portstr='COM6', baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
 
     # Check if the connection was successful
     if not conn.is_connected():
         print("Failed to connect to the OBD-II interface")
         exit()
-
 
 def readingPIDs(pid_val):
     try:
@@ -48,20 +59,28 @@ def readingDTCs():
 def main():
     # connect to OBD-II interface
 
-    try:
-        connect()
-    except:
-        print('error')
+    # try:
+    #     connect()
+    # except:
+    #     print('error')
+    #
+    # # First read any DTCs
+    # # readingDTCs()
+    # # now reading params
+    # for val in listOfParams:
+    #     print(readingPIDs(val))
 
-    # First read any DTCs
-    # readingDTCs()
-    # now reading params
-    for val in listOfParams:
-        print(readingPIDs(val))
+    my_thread = threading.Thread(target=readingPIDs)
+    my_thread.start()
 
+    my_thread_2 = threading.Thread(target=readingDTCs)
+    my_thread_2.start()
+    # command = obd.commands.modes
+    # mode1_command = command[1]  # mode 1
+    #
+    # # Disconnect from the OBD-II interface
+    # conn.close()
 
-    # Disconnect from the OBD-II interface
-    conn.close()
 
 
 if __name__ == "__main__":
