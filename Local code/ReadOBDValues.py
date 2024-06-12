@@ -3,28 +3,15 @@ import threading
 import time
 import logging
 
-FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
-logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.ERROR, format=FORMAT)
+LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
+logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.ERROR, format=LOG_FORMAT)
+logger = logging.getLogger('new_logs')
 conn = None
 
 returnedParamsValues = []  # this is then stored in the db
 
 
 # Connect to the OBD-II interface
-
-
-def thread_5s():
-    while True:
-        time.sleep(5)
-        print("Shabang")
-
-
-def fd():
-    while True:
-        time.sleep(2)
-        print("Testingggg")
-
-
 def connect():
     # Connect to the OBD-II interface
     global conn
@@ -32,37 +19,59 @@ def connect():
 
     # Check if the connection was successful
     if not conn.is_connected():
-        print("Failed to connect to the OBD-II interface")
-        exit()
+        logger.error("Failed to connect to the OBD-II interface")
+        raise Exception("Failed to connect to the OBD-II interface")
 
 
-def readingPIDs_ins(pid_val):  # instantaneous
+def readingPIDs_ins():  # instantaneous
     while True:
-        try:
-            pid = getattr(obd.commands, pid_val)
-        except:
-            print(f"{pid_val} is not valid")
-            logger = logging.getLogger('new_logs')
-            logger.info("PIDs didn't work")
+        write_vals: int = 0
 
-        response = conn.query(pid)
+        if conn is None or not conn.is_connected():
+            logger.error("No connection")
+            write_vals = 0
+            break
 
-        if response.is_null():
-            print("Failed to read PID:", pid)
-        else:
-            print("PID: ", pid, "Value: ", response.value)
-        time.sleep(0.0)
+        if write_vals != 0:   # There is a connection, so proceed
+            response_file = open('Local code/response.txt', 'a')
+
+            ################################################################
+            pid_val = 'ENGINE_LOAD'
+            try:
+                pid = getattr(obd.commands, pid_val)
+            except AttributeError:
+                print(f"{pid_val} is not valid")
+                logger.error("PIDs didn't work")
+                break
+            response = conn.query(pid)
+
+            if response.is_null():
+                print("Failed to read PID:", pid)
+                logger.error(f"Failed to read PID: {pid}")
+            else:
+                print("PID: ", pid, "Value: ", response.value)
+                returnedParamsValues.append((pid, response.value))
+            ################################################################
+
+
+        time.sleep(0.5)  # Added a slight delay to prevent excessive querying
 
 
 def readingDTCs_5m():  # 5 mins
     # Read and print DTCs
     while True:
+        if conn is None or not conn.is_connected():
+            logger.error("OBD-II connection is not established")
+            break
+
         dtcs = conn.query(obd.commands.GET_DTC)
         if dtcs.is_null():
             print("Failed to read DTCs")
+            logger.error("Failed to read DTCs")
         else:
             for dtc in dtcs.value:
-                print("DTC: " + dtc + "\n")
+                print("DTC: " + dtc)
+                returnedParamsValues.append(("DTC", dtc))
         time.sleep(300.0)
 
 
@@ -71,26 +80,27 @@ def main():
     try:
         connect()
     except Exception as e:
-        print('Error in connection: ' + e.__cause__)
+        logger.error('Error in connection: ', exc_info=True)
+        print('Error in connection:', e)
+        return  # Exit the program if connection fails
     finally:
-        print('Moving ON')
+        print('-----Moving ON-----')
 
     # Reading PIDs
-    my_thread = threading.Thread(target=readingPIDs_ins, args={'pid'})
+    pid_thread = threading.Thread(target=readingPIDs_ins, args=('SPEED',))
 
-    # Reading DTCs every 15 minutes
-    my_thread_2 = threading.Thread(target=readingDTCs_5m)
+    # Reading DTCs every 5 minutes
+    dtc_thread = threading.Thread(target=readingDTCs_5m)
+
+    # TODO: Another thread for remote database update
 
     # Threads initiation
-    my_thread.start()
+    pid_thread.start()
+    dtc_thread.start()
 
-    my_thread_2.start()
-
-    # command = obd.commands.modes
-    # mode1_command = command[1]  # mode 1
-    #
-    # # Disconnect from the OBD-II interface
-    # conn.close()
+    # Awaitingg their completion
+    pid_thread.join()
+    dtc_thread.join()
 
 
 if __name__ == "__main__":

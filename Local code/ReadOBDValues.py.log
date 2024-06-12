@@ -1,0 +1,32 @@
+2024-06-04 21:11:46,455 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:11:46,455 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:11:46,456 - WARNING   : Query failed, no connection available
+2024-06-04 21:13:09,032 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:13:09,032 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:13:09,033 - WARNING   : Query failed, no connection available
+2024-06-04 21:14:10,157 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:14:10,157 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:14:10,158 - WARNING   : Query failed, no connection available
+2024-06-04 21:14:26,040 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:14:26,040 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:14:26,041 - WARNING   : Query failed, no connection available
+2024-06-04 21:15:24,766 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:15:24,767 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:15:40,757 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:15:40,757 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:15:59,190 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:15:59,190 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:16:04,368 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:16:04,368 - WARNING   : Cannot load commands: No connection to car
+2024-06-04 21:21:54,527 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-04 21:21:54,527 - WARNING   : Cannot load commands: No connection to car
+2024-06-11 19:46:29,032 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-11 19:46:29,032 - WARNING   : Cannot load commands: No connection to car
+2024-06-11 19:46:29,032 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-11 19:46:29,033 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code\ReadOBDValues.py", line 181, in main
+    connect()
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code\ReadOBDValues.py", line 133, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
