@@ -49,7 +49,7 @@ def readingPIDs_ins():  # instantaneous
                 print("Failed to read PID:", pid)
                 logger.error(f"Failed to read PID: {pid}")
             else:
-                print("PID: ", pid, "Value: ", response.value)
+                print("PID: ", pid, "Value: ", response.value)  # TODO: print to file
                 returnedParamsValues.append((pid, response.value))
             ################################################################
 
