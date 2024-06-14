@@ -30,3 +30,13 @@ Traceback (most recent call last):
   File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code\ReadOBDValues.py", line 133, in connect
     raise Exception("Failed to connect to the OBD-II interface")
 Exception: Failed to connect to the OBD-II interface
+2024-06-14 19:48:00,251 - ERROR     : could not open port 'COM6': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2024-06-14 19:48:00,252 - WARNING   : Cannot load commands: No connection to car
+2024-06-14 19:48:00,252 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-14 19:48:00,252 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code\ReadOBDValues.py", line 93, in main
+    connect()
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code\ReadOBDValues.py", line 24, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface

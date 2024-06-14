@@ -2,6 +2,7 @@ import obd
 import threading
 import time
 import logging
+import json
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.ERROR, format=LOG_FORMAT)
@@ -25,34 +26,45 @@ def connect():
 
 def readingPIDs_ins():  # instantaneous
     while True:
-        write_vals: int = 0
-
         if conn is None or not conn.is_connected():
             logger.error("No connection")
-            write_vals = 0
             break
 
-        if write_vals != 0:   # There is a connection, so proceed
-            response_file = open('Local code/response.txt', 'a')
+        response_data = {}
+        pids_to_read = [
+            'ENGINE_LOAD', 'COOLANT_TEMP', 'RPM', 'MAF', 'THROTTLE_POS',
+            'SHORT_FUEL_TRIM_1', 'LONG_FUEL_TRIM_1', 'FUEL_PRESSURE',
+            'TIMING_ADVANCE', 'O2_B1S1'
+        ]
 
-            ################################################################
-            pid_val = 'ENGINE_LOAD'
+        for pid_val in pids_to_read:
             try:
                 pid = getattr(obd.commands, pid_val)
             except AttributeError:
                 print(f"{pid_val} is not valid")
-                logger.error("PIDs didn't work")
-                break
+                logger.error(f"PID {pid_val} didn't work")
+                continue
+
             response = conn.query(pid)
 
             if response.is_null():
-                print("Failed to read PID:", pid)
-                logger.error(f"Failed to read PID: {pid}")
+                print(f"Failed to read PID: {pid_val}")
+                logger.error(f"Failed to read PID: {pid_val}")
+                response_data[pid_val] = None
             else:
-                print("PID: ", pid, "Value: ", response.value)  # TODO: print to file
-                returnedParamsValues.append((pid, response.value))
-            ################################################################
+                # Validate the response value
+                if isinstance(response.value, (int, float)):
+                    print(f"PID: {pid_val}, Value: {response.value}")
+                    response_data[pid_val] = response.value
+                else:
+                    print(f"Invalid data for PID: {pid_val}")
+                    logger.error(f"Invalid data for PID: {pid_val}")
+                    response_data[pid_val] = None
 
+        returnedParamsValues.append(response_data)
+
+        with open('Local code/response.json', 'a') as response_file:
+            response_file.write(json.dumps(response_data) + "\n")
 
         time.sleep(0.5)  # Added a slight delay to prevent excessive querying
 
