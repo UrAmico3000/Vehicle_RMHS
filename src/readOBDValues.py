@@ -99,7 +99,7 @@ def main():
         print('-----Moving ON-----')
 
     # Reading PIDs
-    pid_thread = threading.Thread(target=readingPIDs_ins, args=('SPEED',))
+    pid_thread = threading.Thread(target=readingPIDs_ins)
 
     # Reading DTCs every 5 minutes
     dtc_thread = threading.Thread(target=readingDTCs_5m)
