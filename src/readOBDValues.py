@@ -3,9 +3,10 @@ import threading
 import time
 import logging
 import json
+import string
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
-logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.ERROR, format=LOG_FORMAT)
+logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('new_logs')
 conn = None
 
@@ -16,7 +17,7 @@ returnedParamsValues = []  # this is then stored in the db
 def connect():
     # Connect to the OBD-II interface
     global conn
-    conn = obd.OBD(portstr='COM6', baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
+    conn = obd.OBD(portstr="/dev/ttyUSB0", baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
 
     # Check if the connection was successful
     if not conn.is_connected():
@@ -31,21 +32,21 @@ def readingPIDs_ins():  # instantaneous
             break
 
         response_data = {}
-        pids_to_read = [
-            'ENGINE_LOAD', 'COOLANT_TEMP', 'RPM', 'MAF', 'THROTTLE_POS',
-            'SHORT_FUEL_TRIM_1', 'LONG_FUEL_TRIM_1', 'FUEL_PRESSURE',
-            'TIMING_ADVANCE', 'O2_B1S1'
+        commands = [
+        obd.commands.RPM,          # Engine RPM
+        obd.commands.SPEED,         # Vehicle Speed
+        obd.commands.ENGINE_LOAD,
+        obd.commands.LONG_FUEL_TRIM_1,
+        obd.commands.O2_B1S1,      
+        obd.commands.THROTTLE_POS, # Throttle Position
+        obd.commands.COOLANT_TEMP, # Coolant Temperature
+        obd.commands.MAF,          # Mass Air Flow
+        obd.commands.FUEL_LEVEL    # Fuel Level
         ]
 
-        for pid_val in pids_to_read:
-            try:
-                pid = getattr(obd.commands, pid_val)
-            except AttributeError:
-                print(f"{pid_val} is not valid")
-                logger.error(f"PID {pid_val} didn't work")
-                continue
+        for pid_val in commands:
 
-            response = conn.query(pid)
+            response = conn.query(pid_val)
 
             if response.is_null():
                 print(f"Failed to read PID: {pid_val}")
@@ -53,20 +54,15 @@ def readingPIDs_ins():  # instantaneous
                 response_data[pid_val] = None
             else:
                 # Validate the response value
-                if isinstance(response.value, (int, float)):
-                    print(f"PID: {pid_val}, Value: {response.value}")
-                    response_data[pid_val] = response.value
-                else:
-                    print(f"Invalid data for PID: {pid_val}")
-                    logger.error(f"Invalid data for PID: {pid_val}")
-                    response_data[pid_val] = None
-
+                #logger.info(f"PID: {pid_val.name}, Value: {response.value}")
+                print(f"PID: {pid_val.name}, Value: {response.value}")
+                response_data[pid_val.name] = response.value.magnitude
         returnedParamsValues.append(response_data)
-
-        with open('Local code/response.json', 'a') as response_file:
+        
+        with open('response.json', 'a') as response_file:
             response_file.write(json.dumps(response_data) + "\n")
 
-        time.sleep(0.5)  # Added a slight delay to prevent excessive querying
+        #time.sleep(0.5)  # Added a slight delay to prevent excessive querying
 
 
 def readingDTCs_5m():  # 5 mins
@@ -108,11 +104,11 @@ def main():
 
     # Threads initiation
     pid_thread.start()
-    dtc_thread.start()
+    #dtc_thread.start()
 
     # Awaitingg their completion
     pid_thread.join()
-    dtc_thread.join()
+    #dtc_thread.join()
 
 
 if __name__ == "__main__":
