@@ -3,7 +3,7 @@ import threading
 import time
 import logging
 import json
-import string
+import eel
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
@@ -84,6 +84,7 @@ def readingDTCs_5m():  # 5 mins
 
 
 def main():
+    eel.init('web')
     # connect to OBD-II interface
     try:
         connect()
@@ -93,6 +94,7 @@ def main():
         return  # Exit the program if connection fails
     finally:
         print('-----Moving ON-----')
+        eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
 
     # Reading PIDs
     pid_thread = threading.Thread(target=readingPIDs_ins)
@@ -109,6 +111,7 @@ def main():
     # Awaitingg their completion
     pid_thread.join()
     #dtc_thread.join()
+     
 
 
 if __name__ == "__main__":
