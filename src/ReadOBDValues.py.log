@@ -1,0 +1,38 @@
+2024-06-23 19:28:06,893 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-23 19:28:06,893 - WARNING   : Cannot load commands: No connection to car
+2024-06-23 19:28:06,893 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-23 19:28:06,893 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 90, in main
+    connect()
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-23 19:28:07,363 - INFO      : 127.0.0.1 - - [2024-06-23 19:28:07] "GET /index.html HTTP/1.1" 200 1284 0.001000
+2024-06-23 19:28:07,367 - INFO      : 127.0.0.1 - - [2024-06-23 19:28:07] "GET /main.js HTTP/1.1" 200 231 0.000000
+2024-06-23 19:28:07,373 - INFO      : 127.0.0.1 - - [2024-06-23 19:28:07] "GET /favicon.ico HTTP/1.1" 404 876 0.001000
+2024-06-23 19:29:20,051 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-23 19:29:20,051 - WARNING   : Cannot load commands: No connection to car
+2024-06-23 19:29:20,051 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-23 19:29:20,051 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 90, in main
+    connect()
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-23 19:29:20,429 - INFO      : 127.0.0.1 - - [2024-06-23 19:29:20] "GET /index.html HTTP/1.1" 200 1284 0.001000
+2024-06-23 19:29:20,433 - INFO      : 127.0.0.1 - - [2024-06-23 19:29:20] "GET /main.js HTTP/1.1" 200 757 0.001000
+2024-06-23 19:30:38,420 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-23 19:30:38,420 - WARNING   : Cannot load commands: No connection to car
+2024-06-23 19:30:38,421 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-23 19:30:38,421 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 90, in main
+    connect()
+  File "E:\Projects\CAP-Middleware\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-23 19:30:38,886 - INFO      : 127.0.0.1 - - [2024-06-23 19:30:38] "GET /index.html HTTP/1.1" 200 1288 0.001001
+2024-06-23 19:30:38,890 - INFO      : 127.0.0.1 - - [2024-06-23 19:30:38] "GET /main.js HTTP/1.1" 200 757 0.000000
+2024-06-23 19:30:38,901 - INFO      : 127.0.0.1 - - [2024-06-23 19:30:38] "GET /favicon.ico HTTP/1.1" 404 876 0.001000
