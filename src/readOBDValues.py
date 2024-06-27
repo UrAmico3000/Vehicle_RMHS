@@ -4,12 +4,13 @@ import time
 import logging
 import json
 import eel
+import requests
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('new_logs')
 conn = None
-
+api_url =""
 returnedParamsValues = []  # this is then stored in the db
 
 
@@ -24,6 +25,12 @@ def connect():
         logger.error("Failed to connect to the OBD-II interface")
         raise Exception("Failed to connect to the OBD-II interface")
 
+def sendPIDvalues(PID):
+    data = PID
+    data["username"] ="tirth"
+    response = requests.post(f'{api_url}/sensor/set', data=data, headers={"Content-Type": "application/json"})
+    if(response.status_code != 200):
+        print(f'Failed to send return status code is {response.status_code}')
 
 def readingPIDs_ins():  # instantaneous
     while True:
@@ -57,8 +64,12 @@ def readingPIDs_ins():  # instantaneous
                 #logger.info(f"PID: {pid_val.name}, Value: {response.value}")
                 print(f"PID: {pid_val.name}, Value: {response.value}")
                 response_data[pid_val.name] = response.value.magnitude
+        
         returnedParamsValues.append(response_data)
         
+        # sends to API
+        sendPIDvalues(response_data)
+
         with open('response.json', 'a') as response_file:
             response_file.write(json.dumps(response_data) + "\n")
 
@@ -84,7 +95,16 @@ def readingDTCs_5m():  # 5 mins
 
 
 def main():
+    global api_url
+
     eel.init('web')
+
+    # Load the configuration file
+    with open('config.json', 'r') as config_file:
+        config = json.load(config_file)
+
+    # Access the API_URL
+    api_url = config['API_URL']
     # connect to OBD-II interface
     try:
         connect()
@@ -94,7 +114,10 @@ def main():
         return  # Exit the program if connection fails
     finally:
         print('-----Moving ON-----')
-        eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
+
+        # this is for UI but for some reason cant get it to launch in fullscreen in rpi works fine in Ubuntu or windows
+        # unfortunatly this sits in main thread
+        # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
 
     # Reading PIDs
     pid_thread = threading.Thread(target=readingPIDs_ins)
