@@ -18,7 +18,7 @@ returnedParamsValues = []  # this is then stored in the db
 def connect():
     # Connect to the OBD-II interface
     global conn
-    conn = obd.OBD(portstr="/dev/ttyUSB0", baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
+    conn = obd.OBD(portstr="COM3", baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
 
     # Check if the connection was successful
     if not conn.is_connected():
@@ -28,7 +28,9 @@ def connect():
 def sendPIDvalues(PID):
     data = PID
     data["username"] ="tirth"
-    response = requests.post(f'{api_url}/sensor/set', data=data, headers={"Content-Type": "application/json"})
+    print(f'http://{api_url}/sensor/set and data is {data}')
+    json_object = json.dumps(data, indent = 4) 
+    response = requests.post(f'http://{api_url}/sensor/set', data=json_object, headers={"Content-Type": "application/json"})
     if(response.status_code != 200):
         print(f'Failed to send return status code is {response.status_code}')
 
@@ -62,7 +64,7 @@ def readingPIDs_ins():  # instantaneous
             else:
                 # Validate the response value
                 #logger.info(f"PID: {pid_val.name}, Value: {response.value}")
-                print(f"PID: {pid_val.name}, Value: {response.value}")
+                #print(f"PID: {pid_val.name}, Value: {response.value}")
                 response_data[pid_val.name] = response.value.magnitude
         
         returnedParamsValues.append(response_data)
