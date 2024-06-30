@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ffa3e82-2a2a-41ef-bbad-6cbd0998c978" name="Changes" comment="dfr">
-      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Vehicle_RMHS" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/Vehicle_RMHS/ReadOBDValues.py.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Vehicle_RMHS" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Vehicle_RMHS/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Vehicle_RMHS/src/readOBDValues.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS/src/readOBDValues.py" afterDir="false" />
     </list>
