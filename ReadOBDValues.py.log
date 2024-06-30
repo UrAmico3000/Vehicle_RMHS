@@ -1,0 +1,38 @@
+2024-06-29 15:41:09,589 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-29 15:41:09,589 - WARNING   : Cannot load commands: No connection to car
+2024-06-29 15:41:09,589 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-29 15:41:09,589 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 90, in main
+    connect()
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-30 02:39:26,535 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-30 02:39:26,535 - WARNING   : Cannot load commands: No connection to car
+2024-06-30 02:39:26,535 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-30 02:39:26,535 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 81, in main
+    connect()
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-30 02:39:56,501 - ERROR     : could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2024-06-30 02:39:56,501 - WARNING   : Cannot load commands: No connection to car
+2024-06-30 02:39:56,501 - ERROR     : Failed to connect to the OBD-II interface
+2024-06-30 02:39:56,501 - ERROR     : Error in connection: 
+Traceback (most recent call last):
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 81, in main
+    connect()
+  File "C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Vehicle_RMHS\src\readOBDValues.py", line 25, in connect
+    raise Exception("Failed to connect to the OBD-II interface")
+Exception: Failed to connect to the OBD-II interface
+2024-06-30 15:13:19,888 - WARNING   : Failed to read port
+2024-06-30 15:13:29,993 - WARNING   : Failed to read port
+2024-06-30 15:13:40,101 - WARNING   : Failed to read port
+2024-06-30 15:13:50,211 - WARNING   : Failed to read port
+2024-06-30 15:14:20,952 - WARNING   : Failed to read port
+2024-06-30 15:14:31,066 - WARNING   : Failed to read port
+2024-06-30 15:14:41,176 - WARNING   : Failed to read port
+2024-06-30 15:14:51,293 - WARNING   : Failed to read port
