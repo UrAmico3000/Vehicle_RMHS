@@ -72,7 +72,6 @@ def executeCommands():
     while True:
         if command_queue:
             command_val = command_queue.popleft()
-            response_data = {}
 
             response = conn.query(command_val)
             if response.is_null():
