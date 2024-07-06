@@ -55,7 +55,7 @@ def readingPIDs_ins():  # instantaneous
         for pid_val in commands:
             command_queue.append(pid_val)
         time.sleep(0.4)  # Adjust the delay as needed
-        sendPIDvalues(response_data) # sending data
+        # sendPIDvalues(response_data) # sending data 
 
 
 def readingDTCs_5m():  # 5 mins
@@ -65,7 +65,7 @@ def readingDTCs_5m():  # 5 mins
             break
 
         command_queue.append(obd.commands.GET_DTC)
-        time.sleep(300.0)
+        time.sleep(1)
 
 
 def executeCommands():
@@ -81,8 +81,9 @@ def executeCommands():
             else:
                 response_data[command_val.name] = response.value.magnitude
 
-            with open('response.json', 'a') as response_file:
-                response_file.write(json.dumps(response_data) + "\n")
+            print("Response for command "+ command_val.name + " is : " + response.value)
+            #with open('response.json', 'a') as response_file:
+                #response_file.write(json.dumps(response_data) + "\n")
 
 
 def main():
