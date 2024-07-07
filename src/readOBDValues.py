@@ -3,106 +3,98 @@ import threading
 import time
 import logging
 import json
-import eel
 import requests
+from collections import deque
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('new_logs')
 conn = None
-api_url =""
-returnedParamsValues = []  # this is then stored in the db
+api_url = ""
+command_queue = deque()
+response_data = {}
+current_DTC = []
 
 
 # Connect to the OBD-II interface
 def connect():
     # Connect to the OBD-II interface
     global conn
-    conn = obd.OBD(portstr="COM3", baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
+    conn = obd.OBD(portstr="/dev/ttyUSB0", baudrate=38400)  # for rpi, use "/dev/ttyUSB0"
 
     # Check if the connection was successful
     if not conn.is_connected():
         logger.error("Failed to connect to the OBD-II interface")
         raise Exception("Failed to connect to the OBD-II interface")
 
+
 def sendPIDvalues(PID):
     data = PID
-    data["username"] ="tirth"
+    data["username"] = "tirth"
     print(f'http://{api_url}/sensor/set and data is {data}')
-    json_object = json.dumps(data, indent = 4) 
+    json_object = json.dumps(data, indent=4)
     response = requests.post(f'http://{api_url}/sensor/set', data=json_object, headers={"Content-Type": "application/json"})
-    if(response.status_code != 200):
+    if response.status_code != 200:
         print(f'Failed to send return status code is {response.status_code}')
 
-def readingPIDs_ins():  # instantaneous
-    while True:
-        if conn is None or not conn.is_connected():
-            logger.error("No connection")
-            break
 
-        response_data = {}
-        commands = [
-        obd.commands.RPM,          # Engine RPM
-        obd.commands.SPEED,         # Vehicle Speed
+def readingPIDs_ins():  # instantaneous
+    commands = [
+        obd.commands.RPM,  # Engine RPM
+        obd.commands.SPEED,  # Vehicle Speed
         obd.commands.ENGINE_LOAD,
         obd.commands.LONG_FUEL_TRIM_1,
-        obd.commands.O2_B1S1,      
-        obd.commands.THROTTLE_POS, # Throttle Position
-        obd.commands.COOLANT_TEMP, # Coolant Temperature
-        obd.commands.MAF,          # Mass Air Flow
-        obd.commands.FUEL_LEVEL    # Fuel Level
-        ]
+        obd.commands.O2_B1S1,
+        obd.commands.THROTTLE_POS,  # Throttle Position
+        obd.commands.COOLANT_TEMP,  # Coolant Temperature
+        obd.commands.MAF,  # Mass Air Flow
+        obd.commands.FUEL_LEVEL  # Fuel Level
+    ]
 
+    while True:
         for pid_val in commands:
-
-            response = conn.query(pid_val)
-
-            if response.is_null():
-                print(f"Failed to read PID: {pid_val}")
-                logger.error(f"Failed to read PID: {pid_val}")
-                response_data[pid_val] = None
-            else:
-                # Validate the response value
-                #logger.info(f"PID: {pid_val.name}, Value: {response.value}")
-                #print(f"PID: {pid_val.name}, Value: {response.value}")
-                response_data[pid_val.name] = response.value.magnitude
-        
-        returnedParamsValues.append(response_data)
-        
-        # sends to API
-        sendPIDvalues(response_data)
-
-        with open('response.json', 'a') as response_file:
-            response_file.write(json.dumps(response_data) + "\n")
-
-        #time.sleep(0.5)  # Added a slight delay to prevent excessive querying
+            command_queue.append(pid_val)
+        time.sleep(0.4)  # Adjust the delay as needed
+        sendPIDvalues(response_data) # sending data 
 
 
 def readingDTCs_5m():  # 5 mins
-    # Read and print DTCs
     while True:
         if conn is None or not conn.is_connected():
             logger.error("OBD-II connection is not established")
             break
 
-        dtcs = conn.query(obd.commands.GET_DTC)
-        if dtcs.is_null():
-            print("Failed to read DTCs")
-            logger.error("Failed to read DTCs")
-        else:
-            for dtc in dtcs.value:
-                print("DTC: " + dtc)
-                returnedParamsValues.append(("DTC", dtc))
-        time.sleep(300.0)
+        command_queue.append(obd.commands.GET_DTC)
+        time.sleep(1)
+
+
+def executeCommands():
+    while True:
+        if command_queue:
+            command_val = command_queue.popleft()
+            response_data = {}
+
+            response = conn.query(command_val)
+            if response.is_null():
+                logger.error(f"Failed to read PID: {command_val}")
+                response_data[command_val] = None
+            elif(command_val.name == 'GET_DTC'):
+                current_DTC = response.value
+                print("GET_DTC EXECUTED" + str(current_DTC))
+            else:
+                response_data[command_val.name] = response.value.magnitude
+                print("Response for command "+ command_val.name + " is :" + str(response.value.magnitude))
+
+            #print("Response for command "+ command_val.name)
+            #with open('response.json', 'a') as response_file:
+                #response_file.write(json.dumps(response_data) + "\n")
 
 
 def main():
     global api_url
 
-    eel.init('web')
-
     # Load the configuration file
-    with open('config.json', 'r') as config_file:
+    with open('../config.json', 'r') as config_file:
         config = json.load(config_file)
 
     # Access the API_URL
@@ -118,7 +110,7 @@ def main():
         print('-----Moving ON-----')
 
         # this is for UI but for some reason cant get it to launch in fullscreen in rpi works fine in Ubuntu or windows
-        # unfortunatly this sits in main thread
+        # unfortunately this sits in main thread
         # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
 
     # Reading PIDs
@@ -127,16 +119,18 @@ def main():
     # Reading DTCs every 5 minutes
     dtc_thread = threading.Thread(target=readingDTCs_5m)
 
-    # TODO: Another thread for remote database update
+    # Execute commands from queue
+    execute_thread = threading.Thread(target=executeCommands)
 
     # Threads initiation
     pid_thread.start()
-    #dtc_thread.start()
+    dtc_thread.start()
+    execute_thread.start()
 
-    # Awaitingg their completion
+    # Awaiting their completion
     pid_thread.join()
-    #dtc_thread.join()
-     
+    dtc_thread.join()
+    execute_thread.join()
 
 
 if __name__ == "__main__":
