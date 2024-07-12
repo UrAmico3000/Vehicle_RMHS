@@ -3,7 +3,7 @@ import threading
 import time
 import logging
 import json
-import requests
+import src.DataSend
 from collections import deque
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
@@ -28,16 +28,6 @@ def connect():
         raise Exception("Failed to connect to the OBD-II interface")
 
 
-def sendPIDvalues(PID):
-    data = PID
-    data["username"] = "tirth"
-    print(f'http://{api_url}/sensor/set and data is {data}')
-    json_object = json.dumps(data, indent=4)
-    response = requests.post(f'http://{api_url}/sensor/set', data=json_object, headers={"Content-Type": "application/json"})
-    if response.status_code != 200:
-        print(f'Failed to send return status code is {response.status_code}')
-
-
 def readingPIDs_ins():  # instantaneous
     commands = [
         obd.commands.RPM,  # Engine RPM
@@ -55,7 +45,7 @@ def readingPIDs_ins():  # instantaneous
         for pid_val in commands:
             command_queue.append(pid_val)
         time.sleep(0.4)  # Adjust the delay as needed
-        sendPIDvalues(response_data) # sending data 
+        src.sendPIDvalues(response_data)  # sending data
 
 
 def readingDTCs_5m():  # 5 mins
@@ -78,16 +68,16 @@ def executeCommands():
             if response.is_null():
                 logger.error(f"Failed to read PID: {command_val}")
                 response_data[command_val] = None
-            elif(command_val.name == 'GET_DTC'):
+            elif command_val.name == 'GET_DTC':
                 current_DTC = response.value
-                print("GET_DTC EXECUTED" + str(current_DTC))
+                print("GET_DTC EXECUTED - current dtcs: " + str(current_DTC))
             else:
                 response_data[command_val.name] = response.value.magnitude
-                print("Response for command "+ command_val.name + " is :" + str(response.value.magnitude))
+                print("Response for command " + command_val.name + " is :" + str(response.value.magnitude))
 
-            #print("Response for command "+ command_val.name)
-            #with open('response.json', 'a') as response_file:
-                #response_file.write(json.dumps(response_data) + "\n")
+            # print("Response for command "+ command_val.name)
+            # with open('response.json', 'a') as response_file:
+            # response_file.write(json.dumps(response_data) + "\n")
 
 
 def main():
