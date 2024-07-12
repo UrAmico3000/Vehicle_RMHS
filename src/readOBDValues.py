@@ -4,6 +4,7 @@ import time
 import logging
 import json
 import src.DataSend
+import src.Gps
 from collections import deque
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
@@ -44,7 +45,7 @@ def readingPIDs_ins():  # instantaneous
     while True:
         for pid_val in commands:
             command_queue.append(pid_val)
-        time.sleep(0.4)  # Adjust the delay as needed
+        time.sleep(0.5)  # Adjust the delay as needed
         src.sendPIDvalues(response_data)  # sending data
 
 
@@ -55,7 +56,7 @@ def readingDTCs_5m():  # 5 mins
             break
 
         command_queue.append(obd.commands.GET_DTC)
-        time.sleep(1)
+        time.sleep(300)
 
 
 def executeCommands():
@@ -112,15 +113,20 @@ def main():
     # Execute commands from queue
     execute_thread = threading.Thread(target=executeCommands)
 
+    # Gps script
+    gps_thread = threading.Thread(target=src.Gps)
+
     # Threads initiation
     pid_thread.start()
     dtc_thread.start()
     execute_thread.start()
+    gps_thread.start()
 
     # Awaiting their completion
     pid_thread.join()
     dtc_thread.join()
     execute_thread.join()
+    gps_thread.join()
 
 
 if __name__ == "__main__":
