@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0ffa3e82-2a2a-41ef-bbad-6cbd0998c978" name="Changes" comment="dfr">
-      <change afterPath="$PROJECT_DIR$/Vehicle_RMHS/ReadOBDValues.py.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vehicle_RMHS" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vehicle_RMHS/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vehicle_RMHS/src/readOBDValues.py" beforeDir="false" afterPath="$PROJECT_DIR$/Vehicle_RMHS/src/readOBDValues.py" afterDir="false" />
-    </list>
+    <list default="true" id="0ffa3e82-2a2a-41ef-bbad-6cbd0998c978" name="Changes" comment="dfr" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,7 +45,7 @@
     "Python.readOBDValues.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main"
+    "git-widget-placeholder": "Merging main"
   },
   "keyToStringList": {
     "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
