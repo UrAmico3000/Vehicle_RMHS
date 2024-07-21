@@ -1,5 +1,5 @@
 import osmnx as ox
-import src.MyLocation
+import MyLocation
 import time
 # from MyLocation import lat, lng
 from shapely.geometry import Point
@@ -12,14 +12,11 @@ from shapely.geometry import Point
 
 ########################################################################################
 
-def Gps():
+def gps():
     G = ox.graph_from_place('Brampton, Ontario, Canada', network_type='drive')
 
-    # Starting the loop for getting continuous location
-    src.MyLocation()
-
     while True:
-        my_location = Point(src.MyLocation.lng, src.MyLocation.lat)
+        my_location = Point(MyLocation.MyLocation().lng, MyLocation.MyLocation().lat)
         nearest_node = ox.distance.nearest_nodes(G, X=my_location.x, Y=my_location.y)
         nearest_edge = ox.distance.nearest_edges(G, X=my_location.x, Y=my_location.y)
 
@@ -28,7 +25,7 @@ def Gps():
         road_name = edge_data.get('name', 'unknown')
         speed_limit = edge_data.get('maxspeed', 'unknown')
 
-        print(f"Road name at location ({src.MyLocation.lat}, {src.MyLocation.lng}): {road_name}")
-        print(f"Speed limit at location ({src.MyLocation.lat}, {src.MyLocation.lng}): {speed_limit}")
+        print(f"Road name at location ({MyLocation.lat}, {MyLocation.lng}): {road_name}")
+        print(f"Speed limit at location ({MyLocation.lat}, {MyLocation.lng}): {speed_limit}")
 
-        time.sleep(10)  # Pause for a while before checking the location again
+        time.sleep(1)  # Pause for a while before checking the location again

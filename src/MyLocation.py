@@ -1,12 +1,12 @@
 import pynmea2
 import serial
 
-_port = "/dev/ttyAMA0"
+_port = "/dev/ttyACM0"
 lat = 43.65852  # Using yours as a default for now
 lng = -79.73235
 
 
-def MyLocation():
+def my_location():
     global lat, lng
 
     try:
@@ -24,13 +24,13 @@ def MyLocation():
             print("Trying again in 5 seconds... ")
             continue
 
-        if new_data.startswith("$GPRMC") or type(new_data) != str or new_data is None:
+        if new_data.startswith("$GPRMC") or type(new_data) is not str or new_data is None:
             try:
                 new_msg = pynmea2.parse(new_data)
                 lat = new_msg.latitude
                 lng = new_msg.longitude
-                gps = f"Latitude = {lat} and Longitude = {lng}"
-                print(gps)
+                # gps = f"Latitude = {lat} and Longitude = {lng}"
+                # print(gps)
             except pynmea2.ParseError as e:
                 print("Parse error: ", e)
 

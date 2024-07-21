@@ -3,8 +3,9 @@ import threading
 import time
 import logging
 import json
-import src.DataSend
-import src.Gps
+import DataSend
+import Gps
+import MyLocation
 from collections import deque
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
@@ -13,8 +14,8 @@ logger = logging.getLogger('new_logs')
 conn = None
 api_url = ""
 command_queue = deque()
-response_data = {}
-current_DTC = []
+response_data_pid = {}
+response_data_dtc = {}
 
 
 # Connect to the OBD-II interface
@@ -29,7 +30,7 @@ def connect():
         raise Exception("Failed to connect to the OBD-II interface")
 
 
-def readingPIDs_ins():  # instantaneous
+def reading_PIDs_ins():  # instantaneous
     commands = [
         obd.commands.RPM,  # Engine RPM
         obd.commands.SPEED,  # Vehicle Speed
@@ -42,39 +43,45 @@ def readingPIDs_ins():  # instantaneous
         obd.commands.FUEL_LEVEL  # Fuel Level
     ]
 
+    # looping through all commands - sending
     while True:
         for pid_val in commands:
             command_queue.append(pid_val)
         time.sleep(0.5)  # Adjust the delay as needed
-        src.sendPIDvalues(response_data)  # sending data
+        DataSend.send_PID_values(response_data_pid)  # Updating data on api_url
 
 
-def readingDTCs_5m():  # 5 mins
+def reading_DTCs_5m():  # 5 mins
     while True:
+        time.sleep(300)
         if conn is None or not conn.is_connected():
             logger.error("OBD-II connection is not established")
             break
 
         command_queue.append(obd.commands.GET_DTC)
-        time.sleep(300)
+
+        DataSend.send_DTC_values(response_data_dtc)  # Updating data on api_url
 
 
-def executeCommands():
+def execute_commands():
+    global response_data_dtc
+    global response_data_pid
     while True:
         if command_queue:
-            command_val = command_queue.popleft()
-            response_data = {}
+            current_queried_command = command_queue.popleft()
 
-            response = conn.query(command_val)
+            response = conn.query(current_queried_command)
             if response.is_null():
-                logger.error(f"Failed to read PID: {command_val}")
-                response_data[command_val] = None
-            elif command_val.name == 'GET_DTC':
-                current_DTC = response.value
-                print("GET_DTC EXECUTED - current dtcs: " + str(current_DTC))
+                logger.error(f"Failed to read PID: {current_queried_command}")
+                response_data_pid[current_queried_command] = None
+
+            elif current_queried_command.name == 'GET_DTC':
+                response_data_dtc = response.value  # or response.value.magnitude
+                print("GET_DTC EXECUTED - current dtcs: " + str(response_data_dtc))
+
             else:
-                response_data[command_val.name] = response.value.magnitude
-                print("Response for command " + command_val.name + " is :" + str(response.value.magnitude))
+                response_data_pid[current_queried_command.name] = response.value.magnitude
+                print("Response for command " + current_queried_command.name + " is :" + str(response.value.magnitude))
 
             # print("Response for command "+ command_val.name)
             # with open('response.json', 'a') as response_file:
@@ -105,28 +112,33 @@ def main():
         # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
 
     # Reading PIDs
-    pid_thread = threading.Thread(target=readingPIDs_ins)
+    pid_thread = threading.Thread(target=reading_PIDs_ins)
 
     # Reading DTCs every 5 minutes
-    dtc_thread = threading.Thread(target=readingDTCs_5m)
+    dtc_thread = threading.Thread(target=reading_DTCs_5m)
 
     # Execute commands from queue
-    execute_thread = threading.Thread(target=executeCommands)
+    execute_thread = threading.Thread(target=execute_commands)
 
     # Gps script
-    gps_thread = threading.Thread(target=src.Gps)
+    gps_thread = threading.Thread(target=Gps.gps)
+
+    # location thread
+    location_thread = threading.Thread(target=MyLocation.my_location)
 
     # Threads initiation
     pid_thread.start()
     dtc_thread.start()
     execute_thread.start()
     gps_thread.start()
+    location_thread.start()
 
     # Awaiting their completion
     pid_thread.join()
     dtc_thread.join()
     execute_thread.join()
     gps_thread.join()
+    location_thread.join()
 
 
 if __name__ == "__main__":
