@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .progress{
+  position: relative;
+  margin: 4px;
+  float:left;
+  text-align: center;
+  font-size: 50px;
+}
+.barOverflow{ /* Wraps the rotating .bar */
+  position: relative;
+  overflow: hidden; /* Comment this line to understand the trick */
+  width: 400px; height: 200px; /* Half circle (overflow) */
+  margin-bottom: -14px; /* bring the numbers up */
+}
+.bar{
+  position: absolute;
+  top: 0; left: 0;
+  width: 400px; height: 400px; /* full circle! */
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 20px solid #eee;     /* half gray, */
+  border-bottom-color: #0bf;  /* half azure */
+  border-right-color: #0bf;
+  transform: rotate(-315deg);
+}
+    </style>
+</head>
+<body>
+    <div></div>
+    <div class="progress">
+        <div class="barOverflow">
+          <div class="bar"></div>
+        </div>
+        <span>100</span>%
+      </div>
+    <script src="main.js"></script>
+</body>
+</html>
