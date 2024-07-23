@@ -6,6 +6,7 @@ import json
 import DataSend
 import Gps
 import MyLocation
+import new_car_or_not_logic
 from collections import deque
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
@@ -107,9 +108,17 @@ def main():
     finally:
         print('-----Moving ON-----')
 
-        # this is for UI but for some reason cant get it to launch in fullscreen in rpi works fine in Ubuntu or windows
+        ###################################################################
+        # this is for UI but for some reason cant get it to launch in
+        # full-screen in rpi works fine in Ubuntu or windows
         # unfortunately this sits in main thread
         # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
+        ###################################################################
+
+    # New Car check
+
+    new_car_or_not_logic.check_vin()
+
 
     # Reading PIDs
     pid_thread = threading.Thread(target=reading_PIDs_ins)
