@@ -3,5 +3,5 @@ requests~=2.32.3
 osmnx~=1.9.3
 shapely~=2.0.4
 pyserial~=3.5
-pynmea2~=1.19.0
 urllib3==1.26.15
+pynmea2==-1.19.0

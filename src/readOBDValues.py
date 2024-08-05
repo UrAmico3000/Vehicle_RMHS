@@ -2,7 +2,6 @@ import obd
 import threading
 import time
 import logging
-import json
 import DataSend
 import Gps
 import MyLocation
@@ -12,8 +11,10 @@ from collections import deque
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger('new_logs')
+
+# variables
 conn = None
-api_url = ""
+PID_commands_list = []
 command_queue = deque()
 response_data_pid = {}
 response_data_dtc = {}
@@ -29,24 +30,39 @@ def connect():
     if not conn.is_connected():
         logger.error("Failed to connect to the OBD-II interface")
         raise Exception("Failed to connect to the OBD-II interface")
+    else:
+        print('-----CONNECTION ESTABLISHED-----')
+
+
+def init():
+
+    # connect to OBD-II interface
+    try:
+        connect()
+    except Exception as e:
+        logger.error('Error in connection: ', exc_info=True)
+        print('Error in connection:', e)
+        return  # Exit the program if connection fails
 
 
 def reading_PIDs_ins():  # instantaneous
-    commands = [
-        obd.commands.RPM,  # Engine RPM
-        obd.commands.SPEED,  # Vehicle Speed
-        obd.commands.ENGINE_LOAD,
-        obd.commands.LONG_FUEL_TRIM_1,
-        obd.commands.O2_B1S1,
-        obd.commands.THROTTLE_POS,  # Throttle Position
-        obd.commands.COOLANT_TEMP,  # Coolant Temperature
-        obd.commands.MAF,  # Mass Air Flow
-        obd.commands.FUEL_LEVEL  # Fuel Level
-    ]
+    global PID_commands_list
+
+    # PID_commands_list = [
+    #     obd.commands.RPM,  # Engine RPM
+    #     obd.commands.SPEED,  # Vehicle Speed
+    #     obd.commands.ENGINE_LOAD,
+    #     obd.commands.LONG_FUEL_TRIM_1,
+    #     obd.commands.O2_B1S1,
+    #     obd.commands.THROTTLE_POS,  # Throttle Position
+    #     obd.commands.COOLANT_TEMP,  # Coolant Temperature
+    #     obd.commands.MAF,  # Mass Air Flow
+    #     obd.commands.FUEL_LEVEL  # Fuel Level
+    # ]
 
     # looping through all commands - sending
     while True:
-        for pid_val in commands:
+        for pid_val in PID_commands_list:
             command_queue.append(pid_val)
         time.sleep(0.5)  # Adjust the delay as needed
         DataSend.send_PID_values(response_data_pid)  # Updating data on api_url
@@ -90,35 +106,22 @@ def execute_commands():
 
 
 def main():
-    global api_url
+    ###################################################################
+    # this is for UI but for some reason cant get it to launch in
+    # full-screen in rpi works fine in Ubuntu or windows
+    # unfortunately this sits in main thread
+    # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
+    ###################################################################
 
-    # Load the configuration file
-    with open('../config.json', 'r') as config_file:
-        config = json.load(config_file)
-
-    # Access the API_URL
-    api_url = config['API_URL']
-    # connect to OBD-II interface
-    try:
-        connect()
-    except Exception as e:
-        logger.error('Error in connection: ', exc_info=True)
-        print('Error in connection:', e)
-        return  # Exit the program if connection fails
-    finally:
-        print('-----Moving ON-----')
-
-        ###################################################################
-        # this is for UI but for some reason cant get it to launch in
-        # full-screen in rpi works fine in Ubuntu or windows
-        # unfortunately this sits in main thread
-        # eel.start('index.html', mode='chrome', cmdline_args=['--kiosk'])
-        ###################################################################
+    # Initialize - url and odb connection
+    init()
 
     # New Car check
 
     new_car_or_not_logic.check_vin()
 
+    ######################################################################################
+    # threads down here
 
     # Reading PIDs
     pid_thread = threading.Thread(target=reading_PIDs_ins)
@@ -148,6 +151,7 @@ def main():
     execute_thread.join()
     gps_thread.join()
     location_thread.join()
+    ######################################################################################
 
 
 if __name__ == "__main__":

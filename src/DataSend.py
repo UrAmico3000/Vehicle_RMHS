@@ -1,7 +1,12 @@
-from readOBDValues import api_url
 import requests
 import json
 
+# Load the configuration file
+with open('../config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+    # Access the API_URL
+    api_url = config['API_URL']
 
 def send_PID_values(PID):
     _data = PID
