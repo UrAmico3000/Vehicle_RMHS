@@ -29,8 +29,8 @@ def my_location():
                 new_msg = pynmea2.parse(new_data)
                 lat = new_msg.latitude
                 lng = new_msg.longitude
-                # gps = f"Latitude = {lat} and Longitude = {lng}"
-                # print(gps)
+                gps = f"Latitude = {lat} and Longitude = {lng}"
+                print(gps)
             except pynmea2.ParseError as e:
                 print("Parse error: ", e)
 

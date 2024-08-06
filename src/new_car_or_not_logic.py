@@ -1,7 +1,4 @@
-from src import readOBDValues
-import io
-import sys
-import vehicle_info_fetch
+
 
 
 VIN = None
