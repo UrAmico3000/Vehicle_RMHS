@@ -5,22 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ffa3e82-2a2a-41ef-bbad-6cbd0998c978" name="Changes" comment="dfr">
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/f2py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/fio" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/normalizer" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/pint-convert" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/pyproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/pyserial-miniterm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/new-venv/bin/pyserial-ports" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/pythonProject2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pythonProject2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Vehicle_RMHS" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/new_car_or_not_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/new_car_or_not_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/readOBDValues.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/readOBDValues.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,6 +63,34 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\harsh\OneDrive\Desktop\Capstone\that_repo\Local code" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="readOBDValues" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="pythonProject2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/readOBDValues.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.readOBDValues" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

@@ -1,6 +1,7 @@
 from src import readOBDValues
 import io
 import sys
+import vehicle_info_fetch
 
 
 VIN = None
@@ -29,10 +30,15 @@ def check_vin():
             f.write(VIN)
             print("VIN updated successfully...")
             readOBDValues.logger.info("Updated VIN: " + VIN)
+
+            vehicle_info_fetch.set_vehicle_info()
+            print("Vehicle info updated successfully...")
+
             f.close()
+            return
         else:
-            print("Failed to retrieve VIN")
-            readOBDValues.logger.error("Could not update VIN")
+            f.close()
+            return
 
 
 def extract_command_names(conn):
@@ -95,7 +101,7 @@ def set_PID_command_list():  # will run only if VIN is changed
 
         # TODO: b) either comment out the the above and try the following
         print("New PID Command List:")
-        for command in readOBDValues.PID_commands_list:
+        for command in readOBDValues.PID_commands_list:  # just to see commands yk
             print(command)
 
         # Reset the new_vehicle flag
