@@ -36,7 +36,9 @@ class Vehicle_info_fetch:
                 print("VIN updated successfully...")
                 self.logger.info("Updated VIN: " + VIN)
 
-                #vehicle_info_fetch.set_vehicle_info()
+                # i am in car with tirth so you do reorganizing later!!!!
+                import DataSend
+                DataSend.sendVIN(VIN)
                 print("Vehicle info updated successfully...")
 
                 f.close()

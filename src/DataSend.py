@@ -27,3 +27,13 @@ def send_DTC_values(DTC):
     response = requests.post(f'http://{api_url}/dtc/set', data=dtc_list, headers={"Content-Type": "application/json"})
     if response.status_code != 200:
         print(f'Failed to send DTC return status code is {response.status_code}')
+
+def sendVIN(VIN):
+    _data = {}
+    _data["username"] = "shahbaj"
+    _data = json.dumps(_data, indent=4)
+    response = requests.put(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data, headers={"Content-Type": "application/json"})
+    if response.status_code != 200:
+        print(f'Failed to send DTC return status code is {response.status_code}')
+    else:
+        print("Updated VIN on BACKEND!!!")
