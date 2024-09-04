@@ -8,7 +8,7 @@ import MyLocation
 from collections import deque
 import io
 import sys
-import vehicle_info_fetch
+import vehicle_info_fetch as vf
 
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
@@ -21,48 +21,6 @@ PID_commands_list = []
 command_queue = deque()
 response_data_pid = {}
 response_data_dtc = {}
-
-
-
-
-
-VIN = None
-new_vehicle = False
-
-
-def get_vin():
-    from obd import obd
-    vin_cmd = obd.commands.VIN
-    vin_response = conn.query(vin_cmd)
-    if vin_response:
-        return vin_response.value
-    return None
-
-
-def check_vin():
-    global VIN
-    VIN = get_vin()
-    with open(file='VIN.txt',mode='r+') as f:
-        _current_vin = f.read()
-
-        # Update if a new one
-        if _current_vin != VIN:
-            global new_vehicle
-            new_vehicle = True
-            VIN = VIN.decode('ascii', errors='replace')
-            
-            f.write(VIN)
-            print("VIN updated successfully...")
-            logger.info("Updated VIN: " + VIN)
-
-            vehicle_info_fetch.set_vehicle_info()
-            print("Vehicle info updated successfully...")
-
-            f.close()
-            return
-        else:
-            f.close()
-            return
 
 
 def extract_command_names(conn):
@@ -233,8 +191,10 @@ def main():
     init()
 
     # New Car check
+    vehicle_info_fetch = vf.Vehicle_info_fetch(conn=conn,logger=logger)
+
     
-    check_vin()
+    vehicle_info_fetch.check_vin()
 
     ######################################################################################
     # threads down here

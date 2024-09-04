@@ -1,23 +1,47 @@
 import requests
 import json
 
+VIN = None
+new_vehicle = False
 
-def set_vehicle_info():
-    with open('VIN.txt', 'r') as file:
-        vin = file.read().strip()
+class Vehicle_info_fetch:
+    def __init__(self, conn, logger):
+        self.conn = conn
+        self.logger = logger
+        
+    def get_vin(self):
+        from obd import obd
+        vin_cmd = obd.commands.VIN
+        vin_response = self.conn.query(vin_cmd)
+        if vin_response:
+            return vin_response.value
+        return None
 
-    # API URL with the VIN
-    api_url = f'https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/{vin}?format=json'
 
-    response = requests.get(api_url)
+    def check_vin(self):
+        global VIN
+        VIN = self.get_vin()
+        VIN = VIN.decode('ascii', errors='replace')
+        print(f'VIN IS : {VIN}')
+        with open(file='VIN.txt',mode='r+') as f:
+            _current_vin = f.read()
 
-    if response.status_code == 200:
-        data = response.json()
+            # Update if a new one 
+            if _current_vin != VIN:
+                global new_vehicle
+                new_vehicle = True
+                print("new Vehicle")
+                
+                f.write(VIN)
+                print("VIN updated successfully...")
+                self.logger.info("Updated VIN: " + VIN)
 
-        # Save the JSON data to a new file
-        with open('decoded_vin.json', 'w') as json_file:
-            json.dump(data, json_file, indent=4)
+                #vehicle_info_fetch.set_vehicle_info()
+                print("Vehicle info updated successfully...")
 
-        print(f"Vehicle data updated from gov.")
-    else:
-        print(f"Failed to retrieve data. Status code: {response.status_code}")
+                f.close()
+                return
+            else:
+                f.close()
+                return
+
