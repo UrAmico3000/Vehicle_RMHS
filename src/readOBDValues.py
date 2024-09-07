@@ -5,6 +5,8 @@ import logging
 import DataSend
 import Gps
 import MyLocation
+import CommandList
+
 from collections import deque
 import io
 import sys
@@ -22,77 +24,31 @@ command_queue = deque()
 response_data_pid = {}
 response_data_dtc = {}
 
-
-def extract_command_names(conn):
-    commands_list = []
-
-    # Capture the print output of conn.print_commands
-    captured_output = io.StringIO()  # Create StringIO object
-    sys.stdout = captured_output  # Redirect stdout to the StringIO object
-
-    conn.print_commands()  # Call the method to print commands
-
-    sys.stdout = sys.__stdout__  # Reset redirect.
-
-    commands_output = captured_output.getvalue()  # Get the printed output as a string
-
-    # Process each line of the captured output
-    for line in commands_output.strip().split("\n"):
-        parts = line.strip().split("] ")
-        if len(parts) == 2:
-            command_name = parts[1].strip().replace(" ", "_").upper()
-            commands_list.append(f"obd.commands.{command_name}")
-
-    return commands_list
-
-
-def set_PID_command_list():  # will run only if VIN is changed
-    # ------------- pseudo code -------------- ########################################################
-    # if new_vehicle:
-    #     # run PID_A commands
-    #     # get values and store in the variable 'available_commands_b' in binary
-    #     # loop init
-    #     # for each of the 1s in the binary response available_commands_b, get the
-    #     # response.name for the corresponding commands
-    #     # ... and further store it in the format - obd.commands.command_name (RPM for instance)
-    #     # append it to the list
-    #     # next iteration until it ends
-    #
-    #     readOBDValues.PID_commands_list = []
-    ###################################################################################################
-
-    global new_vehicle
-    if new_vehicle:
-        #PID_commands_list = extract_command_names(conn)
-
-        # TODO: a) or try any other method to convert to bitstring, if it does not work
-        # # Run PID_A commands to get the list of supported PIDs
-        # pid_A_command = obd.commands.PIDS_A
-        # response = readOBDValues.conn.query(pid_A_command)
-        #
-        # if response.is_successful():
-        #     # Get the binary string of the response
-        #     available_commands_b = response.value.bitstring
-        #
-        #     # Iterate over each bit in the binary string
-        #     for i, bit in enumerate(available_commands_b):
-        #         if bit == '1':
-        #             # Get the corresponding command based on the index
-        #             command = obd.commands[pid_A_command[i + 1]]
-        #             readOBDValues.PID_commands_list.append(command)
-
-        # TODO: b) either comment out the the above and try the following
+def set_PID_command_list():
+    if vf.new_vehicle:
         print("New PID Command List:")
-        for command in PID_commands_list:  # just to see commands yk
-            print(command)
-
-        # Reset the new_vehicle flag
-        new_vehicle = False
-        return
-
-    print("Same old vehicle - mehhh...")
-    return
-
+        pid_a = conn.query(obd.commands.PIDS_A)
+        pid_b = conn.query(obd.commands.PIDS_B)
+        pid_c = conn.query(obd.commands.PIDS_C)
+        pid_a = pid_a.value
+        pid_b = pid_b.value
+        pid_c = pid_c.value
+        for i in range(len(pid_a)):
+            if(pid_a[i] == 1):
+                CommandList.PID_A.append(i)
+        for i in range(len(pid_b)):
+            if(pid_b[i] == 1):
+                CommandList.PID_B.append(i)
+        for i in range(len(pid_c)):
+            if(pid_c[i] == 1):
+                CommandList.PID_C.append(i)
+        print("PID's Supported")
+        print(CommandList.PID_A)
+        print(CommandList.PID_B)
+        print(CommandList.PID_C)
+        vf.new_vehicle = False
+    else:
+        print("Same old vehicle")
 
 # Connect to the OBD-II interface
 def connect():
@@ -117,6 +73,22 @@ def init():
         logger.error('Error in connection: ', exc_info=True)
         print('Error in connection:', e)
         return  # Exit the program if connection fails
+    
+def longerThread():
+    while 1:
+        for index in range(len(CommandList.Commands_A)):
+            if index != 0 and (index in CommandList.PID_A):
+                time.sleep(0.5)
+                command_queue.append(CommandList.Commands_A[index])
+        for index in range(len(CommandList.Commands_B)):
+            if index != 0 and (index in CommandList.PID_B):
+                time.sleep(0.5)
+                command_queue.append(CommandList.Commands_B[index])
+        for index in range(len(CommandList.Commands_C)):
+            if index != 0 and (index in CommandList.PID_C):
+                time.sleep(0.5)
+                command_queue.append(CommandList.Commands_C[index])
+        
 
 
 def reading_PIDs_ins():  # instantaneous
@@ -195,6 +167,8 @@ def main():
 
     
     vehicle_info_fetch.check_vin()
+
+    set_PID_command_list
 
     ######################################################################################
     # threads down here

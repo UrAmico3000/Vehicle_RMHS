@@ -30,7 +30,7 @@ def send_DTC_values(DTC):
 
 def sendVIN(VIN):
     _data = {}
-    _data["username"] = "shahbaj"
+    _data["username"] = "tirth"
     _data = json.dumps(_data, indent=4)
     response = requests.put(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data, headers={"Content-Type": "application/json"})
     if response.status_code != 200:
