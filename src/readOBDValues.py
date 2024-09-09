@@ -45,7 +45,7 @@ def set_PID_command_list():
         for i in range(len(pid_c)):
             if(pid_c[i] == 1):
                 CommandList.PID_C.append(i)
-                
+
         jsonobject = {
             "pid_a":pid_a,
             "pid_b":pid_b,
@@ -84,16 +84,19 @@ def longerThread():
     while 1:
         for index in range(len(CommandList.Commands_A)):
             if index != 0 and (index in CommandList.PID_A):
-                time.sleep(0.5)
-                command_queue.append(CommandList.Commands_A[index])
+                if CommandList.Commands_A[index] in CommandList.PID_commands_list:
+                    time.sleep(0.5)
+                    command_queue.append(CommandList.Commands_A[index])
         for index in range(len(CommandList.Commands_B)):
             if index != 0 and (index in CommandList.PID_B):
-                time.sleep(0.5)
-                command_queue.append(CommandList.Commands_B[index])
+                if CommandList.Commands_B[index] in CommandList.PID_commands_list:
+                    time.sleep(0.5)
+                    command_queue.append(CommandList.Commands_B[index])
         for index in range(len(CommandList.Commands_C)):
             if index != 0 and (index in CommandList.PID_C):
-                time.sleep(0.5)
-                command_queue.append(CommandList.Commands_C[index])
+                if CommandList.Commands_C[index] in CommandList.PID_commands_list:
+                    time.sleep(0.5)
+                    command_queue.append(CommandList.Commands_C[index])
         
 
 
