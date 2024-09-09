@@ -4,6 +4,7 @@ import time
 # from MyLocation import lat, lng
 from shapely.geometry import Point
 import readOBDValues
+import DataSend
 
 
 ########################################################################################
@@ -31,5 +32,7 @@ def gps():
             print(f"Speed limit at location ({MyLocation.lat}, {MyLocation.lng}): {speed_limit}")
             if readOBDValues.response_data_pid["SPEED"] > speed_limit + 2:
                 print(f"you went over speed limit {speed_limit} with speed: {readOBDValues.response_data_pid["SPEED"]}")
+                # sends to backend
+                DataSend.sendSpeedTrigger(speed_limit, readOBDValues.response_data_pid["SPEED"], road_name, MyLocation.lat ,MyLocation.lng)
 
-        time.sleep(1)  # Pause for a while before checking the location again
+        time.sleep(0.5)  # Pause for a while before checking the location again
