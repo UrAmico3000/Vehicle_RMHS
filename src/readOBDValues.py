@@ -6,6 +6,7 @@ import DataSend
 import Gps
 import MyLocation
 import CommandList
+import json
 
 from collections import deque
 import io
@@ -30,9 +31,11 @@ def set_PID_command_list():
         pid_a = conn.query(obd.commands.PIDS_A)
         pid_b = conn.query(obd.commands.PIDS_B)
         pid_c = conn.query(obd.commands.PIDS_C)
+
         pid_a = pid_a.value
         pid_b = pid_b.value
         pid_c = pid_c.value
+
         for i in range(len(pid_a)):
             if(pid_a[i] == 1):
                 CommandList.PID_A.append(i)
@@ -42,11 +45,14 @@ def set_PID_command_list():
         for i in range(len(pid_c)):
             if(pid_c[i] == 1):
                 CommandList.PID_C.append(i)
-        print("PID's Supported")
-        print(CommandList.PID_A)
-        print(CommandList.PID_B)
-        print(CommandList.PID_C)
-        vf.new_vehicle = False
+                
+        jsonobject = {
+            "pid_a":pid_a,
+            "pid_b":pid_b,
+            "pid_c":pid_c,
+        }
+        with open('data.json', 'w') as f:
+            json.dump(jsonobject, f)
     else:
         print("Same old vehicle")
 
@@ -168,7 +174,8 @@ def main():
     
     vehicle_info_fetch.check_vin()
 
-    set_PID_command_list
+    set_PID_command_list()
+    CommandList.fetch_existing_values() # fetches json dump of supported PID values in index format
 
     ######################################################################################
     # threads down here

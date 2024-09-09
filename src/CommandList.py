@@ -1,8 +1,19 @@
 import obd
+import json
 
 PID_A = []
 PID_B = []
 PID_C = []
+
+def fetch_existing_values():
+    global PID_A 
+    global PID_B 
+    global PID_C
+    with open('data.json', 'r') as f:
+        data = json.loads(f)
+        PID_A = data["pid_a"]
+        PID_B = data["pid_b"]
+        PID_C = data["pid_c"]
 
 PID_commands_list = [
         obd.commands.RPM,  # Engine RPM
