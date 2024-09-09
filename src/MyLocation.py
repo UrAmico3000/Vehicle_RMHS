@@ -2,8 +2,8 @@ import pynmea2
 import serial
 
 _port = "/dev/ttyACM0"
-lat = 43.65852  # Using yours as a default for now
-lng = -79.73235
+lat = 0  # Using yours as a default for now
+lng = 0
 
 
 def my_location():

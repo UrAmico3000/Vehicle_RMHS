@@ -3,6 +3,7 @@ import MyLocation
 import time
 # from MyLocation import lat, lng
 from shapely.geometry import Point
+import readOBDValues
 
 
 ########################################################################################
@@ -16,16 +17,19 @@ def gps():
     G = ox.graph_from_place('Brampton, Ontario, Canada', network_type='drive')
 
     while True:
-        my_location = Point(MyLocation.MyLocation().lng, MyLocation.MyLocation().lat)
-        nearest_node = ox.distance.nearest_nodes(G, X=my_location.x, Y=my_location.y)
+        my_location = Point(MyLocation.lng, MyLocation.lat)
+        #nearest_node = ox.distance.nearest_nodes(G, X=my_location.x, Y=my_location.y)
         nearest_edge = ox.distance.nearest_edges(G, X=my_location.x, Y=my_location.y)
 
         edge_data = G.edges[nearest_edge]       # nearest edge on 'drive' map
 
         road_name = edge_data.get('name', 'unknown')
-        speed_limit = edge_data.get('maxspeed', 'unknown')
+        speed_limit = edge_data.get('maxspeed', 50)
 
-        print(f"Road name at location ({MyLocation.lat}, {MyLocation.lng}): {road_name}")
-        print(f"Speed limit at location ({MyLocation.lat}, {MyLocation.lng}): {speed_limit}")
+        if (MyLocation.lat != 0) and (MyLocation.lng != 0):
+            print(f"Road name at location ({MyLocation.lat}, {MyLocation.lng}): {road_name}")
+            print(f"Speed limit at location ({MyLocation.lat}, {MyLocation.lng}): {speed_limit}")
+            if readOBDValues.response_data_pid["SPEED"] > speed_limit + 2:
+                print(f"you went over speed limit {speed_limit} with speed: {readOBDValues.response_data_pid["SPEED"]}")
 
         time.sleep(1)  # Pause for a while before checking the location again
