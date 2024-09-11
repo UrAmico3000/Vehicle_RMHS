@@ -10,7 +10,8 @@ def fetch_existing_values():
     global PID_B 
     global PID_C
     with open('data.json', 'r') as f:
-        data = json.loads(f)
+        content =  f.read()
+        data = json.loads(content)
         PID_A = data["pid_a"]
         PID_B = data["pid_b"]
         PID_C = data["pid_c"]

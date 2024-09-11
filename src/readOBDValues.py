@@ -80,21 +80,21 @@ def init():
         print('Error in connection:', e)
         return  # Exit the program if connection fails
     
-def longerThread():
+def regular_queue_PIDs():
     while 1:
         for index in range(len(CommandList.Commands_A)):
             if index != 0 and (index in CommandList.PID_A):
-                if CommandList.Commands_A[index] in CommandList.PID_commands_list:
+                if CommandList.Commands_A[index] not in CommandList.PID_commands_list:
                     time.sleep(0.5)
                     command_queue.append(CommandList.Commands_A[index])
         for index in range(len(CommandList.Commands_B)):
             if index != 0 and (index in CommandList.PID_B):
-                if CommandList.Commands_B[index] in CommandList.PID_commands_list:
+                if CommandList.Commands_B[index] not in CommandList.PID_commands_list:
                     time.sleep(0.5)
                     command_queue.append(CommandList.Commands_B[index])
         for index in range(len(CommandList.Commands_C)):
             if index != 0 and (index in CommandList.PID_C):
-                if CommandList.Commands_C[index] in CommandList.PID_commands_list:
+                if CommandList.Commands_C[index] not in CommandList.PID_commands_list:
                     time.sleep(0.5)
                     command_queue.append(CommandList.Commands_C[index])
         
@@ -183,7 +183,7 @@ def main():
     ######################################################################################
     # threads down here
 
-    # Reading PIDs
+    # priority queue for reading PID values
     pid_thread = threading.Thread(target=reading_PIDs_ins)
 
     # Reading DTCs every 5 minutes
@@ -198,12 +198,16 @@ def main():
     # location thread
     location_thread = threading.Thread(target=MyLocation.my_location)
 
+    # regular queue for reading PID values
+    longer_thread =  threading.Thread(target=regular_queue_PIDs)
+
     # Threads initiation
     pid_thread.start()
     dtc_thread.start()
     execute_thread.start()
     gps_thread.start()
     location_thread.start()
+    longer_thread.start()
 
     # Awaiting their completion
     pid_thread.join()
@@ -211,6 +215,7 @@ def main():
     execute_thread.join()
     gps_thread.join()
     location_thread.join()
+    longer_thread.join()
     ######################################################################################
 
 
