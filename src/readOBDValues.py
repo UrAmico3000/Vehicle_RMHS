@@ -24,6 +24,7 @@ PID_commands_list = []
 command_queue = deque()
 response_data_pid = {}
 response_data_dtc = {}
+# initial_FUEL_LEVEL = None
 
 def set_PID_command_list():
     if vf.new_vehicle:
@@ -56,6 +57,24 @@ def set_PID_command_list():
     else:
         print("Same old vehicle")
 
+# def fuelConsumption():
+#     first = True
+#     while 1:
+#         if first:
+#             pass;
+#         else:
+#             send Backend (response_data_pid["FUEL_LEVEL"] - initial_FUEL_LEVEL) # delta on disconnect
+#         first =  False
+
+
+# Average Fuel Consumption Last month Consumption
+# last trip
+# fuel consumption * price ()
+# Trip on Monday from Eglinton to Burlington
+# Co2 emission 
+
+    
+
 # Connect to the OBD-II interface
 def connect():
     # Connect to the OBD-II interface
@@ -85,7 +104,7 @@ def regular_queue_PIDs():
         for index in range(len(CommandList.Commands_A)):
             if index != 0 and (index in CommandList.PID_A):
                 if CommandList.Commands_A[index] not in CommandList.PID_commands_list:
-                    time.sleep(0.5)
+                    time.sleep(0.5) 
                     command_queue.append(CommandList.Commands_A[index])
         for index in range(len(CommandList.Commands_B)):
             if index != 0 and (index in CommandList.PID_B):
@@ -98,8 +117,7 @@ def regular_queue_PIDs():
                     time.sleep(0.5)
                     command_queue.append(CommandList.Commands_C[index])
         
-
-
+   
 def reading_PIDs_ins():  # instantaneous
     global PID_commands_list
 
@@ -152,7 +170,12 @@ def execute_commands():
                 print("GET_DTC EXECUTED - current dtcs: " + str(response_data_dtc))
 
             else:
-                response_data_pid[current_queried_command.name] = response.value.magnitude
+                if conn.supports(current_queried_command):
+                    response_data_pid[current_queried_command.name] = response.value.magnitude
+                else:
+                    # TODO Check if it works
+                    if current_queried_command in CommandList.Commands_A:
+                        CommandList.PID_A.remove(CommandList.Commands_A.index(current_queried_command))
                 print("Response for command " + current_queried_command.name + " is :" + str(response.value.magnitude))
 
             # print("Response for command "+ command_val.name)

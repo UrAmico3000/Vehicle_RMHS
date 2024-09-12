@@ -52,3 +52,15 @@ def sendSpeedTrigger(SPEED_LIMIT, SPEED, ROAD_NAME, Latitude, Longitude):
         print(f'Failed to send speed Trigger return status code is {response.status_code}')
     else:
         print("Add SPEED Trigger on BACKEND!!!")
+
+
+def sendVIN(VIN):
+    _data = {}
+    _data["username"] = "tirth"
+    _data["Fuel Difference"] = ""
+    _data = json.dumps(_data, indent=4)
+    response = requests.post(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data, headers={"Content-Type": "application/json"})
+    if response.status_code != 200:
+        print(f'Failed to send VIN return status code is {response.status_code}')
+    else:
+        print("Updated VIN on BACKEND!!!")
