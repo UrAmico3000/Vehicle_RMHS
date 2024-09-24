@@ -4,4 +4,6 @@ osmnx~=1.9.3
 shapely~=2.0.4
 pyserial~=3.5
 urllib3==1.26.15
-pynmea2==-1.19.0
+pynmea2~=1.19.0
+Kivy~=2.3.0
+gps~=3.19

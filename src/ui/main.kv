@@ -1,0 +1,52 @@
+# main.kv
+
+<MainScreen>:
+    name: 'main'
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: dp(20)
+        spacing: dp(20)
+
+        MDLabel:
+            text: "Vehicle RMHS"
+            font_style: "H4"
+            halign: "center"
+            size_hint_y: None
+            height: self.texture_size[1]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: dp(20)
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+
+                MDLabel:
+                    id: rpm_label
+                    text: "RPM: 0"
+                    size_hint_x: None
+                    width: dp(100)
+
+                MDProgressBar:
+                    id: rpm_bar  # Ensure this id is correctly assigned
+                    max: 8000
+                    value: 0
+                    color: app.theme_cls.primary_color
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+
+                MDLabel:
+                    id: speed_label
+                    text: "Speed: 0 km/h"
+                    size_hint_x: None
+                    width: dp(100)
+
+                MDProgressBar:
+                    id: speed_bar  # Ensure this id is correctly assigned
+                    max: 200
+                    value: 0
+                    color: app.theme_cls.accent_color

@@ -5,18 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f382a7ce-9d5f-4802-87cf-c9f5fe0e9996" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/pythonProject2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pythonProject2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CommandList.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/CommandList.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataSend.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataSend.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/readOBDValues.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/readOBDValues.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/vehicle_info_fetch.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/vehicle_info_fetch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/main.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/meter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ui/readOBDvalues.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">
@@ -33,13 +46,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "ui-and-some-changes"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "Python"
+    ]
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/ui" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
