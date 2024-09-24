@@ -245,7 +245,7 @@ def execute_commands():
 
             else:
                 if conn.supports(current_queried_command):
-                    response_data_pid[current_queried_command.name] = response.value.magnitude
+                    response_data_pid[current_queried_command.name] = str(response.value.magnitude)
                 else:
                     # TODO Check if it works
                     if current_queried_command in CommandList.Commands_A:
