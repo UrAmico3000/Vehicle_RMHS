@@ -8,6 +8,7 @@ with open('../config.json', 'r') as config_file:
     # Access the API_URL
     api_url = config['API_URL']
 
+
 def send_PID_values(PID):
     _data = PID
     _data["username"] = "tirth"
@@ -28,11 +29,13 @@ def send_DTC_values(DTC):
     if response.status_code != 200:
         print(f'Failed to send DTC return status code is {response.status_code}')
 
+
 def sendVIN(VIN):
     _data = {}
     _data["username"] = "tirth"
     _data = json.dumps(_data, indent=4)
-    response = requests.put(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data, headers={"Content-Type": "application/json"})
+    response = requests.put(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data,
+                            headers={"Content-Type": "application/json"})
     if response.status_code != 200:
         print(f'Failed to send VIN return status code is {response.status_code}')
     else:
@@ -47,7 +50,8 @@ def sendSpeedTrigger(SPEED_LIMIT, SPEED, ROAD_NAME, Latitude, Longitude):
     _data["SPEED_LIMIT"] = SPEED_LIMIT
     _data["Latitude"] = Latitude
     _data["Longitude"] = Longitude
-    response = requests.post(f'http://{api_url}/speed-trigger/add', data=_data, headers={"Content-Type": "application/json"})
+    response = requests.post(f'http://{api_url}/speed-trigger/add', data=_data,
+                             headers={"Content-Type": "application/json"})
     if response.status_code != 200:
         print(f'Failed to send speed Trigger return status code is {response.status_code}')
     else:
@@ -59,7 +63,8 @@ def sendVIN(VIN):
     _data["username"] = "tirth"
     _data["Fuel Difference"] = ""
     _data = json.dumps(_data, indent=4)
-    response = requests.post(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data, headers={"Content-Type": "application/json"})
+    response = requests.post(f'http://{api_url}/carinfo/updateByVIN/{VIN}', data=_data,
+                             headers={"Content-Type": "application/json"})
     if response.status_code != 200:
         print(f'Failed to send VIN return status code is {response.status_code}')
     else:
