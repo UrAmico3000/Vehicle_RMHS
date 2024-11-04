@@ -27,3 +27,10 @@ document.querySelectorAll(".progress").forEach((progress)=> {
 
     requestAnimationFrame(animate);
 });
+
+
+function updateValue(value) {
+    var text = document.getElementById('Value');
+    text.innerHTML = value;
+}
+eel.expose(updateValue);
