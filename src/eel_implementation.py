@@ -16,7 +16,7 @@ def running_method():
 def start_eel():
     
     print("Loaded assets")
-    eel.start('index.html', mode='chrome')  # Start eel in blocking mode here
+    eel.start('index.html', mode='chrome',)  # Start eel in blocking mode here
 
 # Start eel in a separate thread
 eel_thread = threading.Thread(target=start_eel)

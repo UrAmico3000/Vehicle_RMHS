@@ -25,12 +25,12 @@ document.querySelectorAll(".progress").forEach((progress)=> {
         }
     }
 
-    requestAnimationFrame(animate);
+    //requestAnimationFrame(animate);
 });
 
 
 function updateValue(value) {
-    var text = document.getElementById('Value');
-    text.innerHTML = value;
+    var bar = document.getElementById('bar');
+    bar.style.transform = "rotate(" + (45 + (value * 1.8)) + "deg)";
 }
 eel.expose(updateValue);
