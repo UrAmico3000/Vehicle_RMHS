@@ -11,7 +11,7 @@ def my_location():
 
     try:
         _ser = serial.Serial(_port, baudrate=9600, timeout=0.5)
-        _data_out = pynmea2.NMEAStreamReader()  # redundant nigga?
+
     except Exception as e:
         print("Error opening serial port: ", e)
         return lat, lng

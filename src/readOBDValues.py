@@ -13,6 +13,11 @@ import io
 import sys
 import vehicle_info_fetch as vf
 
+# GPS import
+import osmnx as ox
+from shapely.geometry import Point
+import requests
+
 
 LOG_FORMAT = '%(asctime)s - %(levelname)-10s: %(message)s'
 logging.basicConfig(filename='ReadOBDValues.py.log', level=logging.INFO, format=LOG_FORMAT)
@@ -48,30 +53,76 @@ def set_PID_command_list():
                 CommandList.PID_C.append(i)
 
         jsonobject = {
-            "pid_a":pid_a,
-            "pid_b":pid_b,
-            "pid_c":pid_c,
+            "pid_a":CommandList.PID_A,
+            "pid_b":CommandList.PID_B,
+            "pid_c":CommandList.PID_C,
         }
         with open('data.json', 'w') as f:
             json.dump(jsonobject, f)
     else:
         print("Same old vehicle")
 
-# def fuelConsumption():
-#     first = True
-#     while 1:
-#         if first:
-#             pass;
-#         else:
-#             send Backend (response_data_pid["FUEL_LEVEL"] - initial_FUEL_LEVEL) # delta on disconnect
-#         first =  False
+# TODO Test it!!! :)
+def fuelConsumption():
+    first_level = True
+    initial_FUEL_LEVEL = None
+    trip_id = None
+    initial_distance = None
+    previous_speed = None
+    total_distance_travelled = 0
 
+    fuel_response = conn.query(obd.commands.FUEL_LEVEL)
+    speed_response = conn.query(obd.commands.SPEED)  # Fetching the speed in km/h
 
-# Average Fuel Consumption Last month Consumption
-# last trip
-# fuel consumption * price ()
-# Trip on Monday from Eglinton to Burlington
-# Co2 emission 
+    while True:
+        current_FUEL_LEVEL = fuel_response.value.magnitude if not fuel_response.is_null() else None
+        current_speed = speed_response.value.magnitude if not speed_response.is_null() else None  # in km/h
+
+        if current_FUEL_LEVEL is None:
+            print("Fuel level data not available")
+            continue
+
+        if current_speed is None:
+            print("Speed data not available")
+            continue
+
+        if first_level:
+            # Initialize the fuel level and set initial values
+            initial_FUEL_LEVEL = current_FUEL_LEVEL
+            previous_speed = current_speed
+
+            # Backend trip initiation
+            response = requests.post(f"http://{DataSend.api_url}/trip/add",
+                                     json={"username": "Tirth"})
+            trip_data = response.json()
+            trip_id = trip_data.get("id")
+
+            first_level = False
+        else:
+            # Calculate distance using the speed formula: distance = speed * time
+            time_elapsed_hours = 5 / 3600  # 5 seconds converted to hours
+            distance_travelled = previous_speed * time_elapsed_hours  # Distance in km
+            total_distance_travelled += distance_travelled  # Accumulating the total distance
+
+            fuel_consumed = initial_FUEL_LEVEL - current_FUEL_LEVEL
+
+            data = {
+                "FuelConsumption": fuel_consumed,
+                "DistanceTravelled": total_distance_travelled
+            }
+
+            try:
+                response = requests.put(f"http://{DataSend.api_url}/trip/update/{trip_id}", json=data)
+                response.raise_for_status()
+                print("Trip updated successfully")
+            except requests.exceptions.RequestException as e:
+                print(f"Error updating trip: {e}")
+
+            # Update the previous speed for the next calculation
+            previous_speed = current_speed
+
+        # Delay for 5 seconds before the next update
+        time.sleep(5)
 
     
 
@@ -141,9 +192,9 @@ def reading_PIDs_ins():  # instantaneous
         DataSend.send_PID_values(response_data_pid)  # Updating data on api_url
 
 
-def reading_DTCs_5m():  # 5 mins
+def reading_DTCs_5m():  # 3 seconds
     while True:
-        time.sleep(300)
+        time.sleep(3)
         if conn is None or not conn.is_connected():
             logger.error("OBD-II connection is not established")
             break
@@ -181,6 +232,30 @@ def execute_commands():
             # print("Response for command "+ command_val.name)
             # with open('response.json', 'a') as response_file:
             # response_file.write(json.dumps(response_data) + "\n")
+
+def gps():
+    G = ox.graph_from_place('Brampton, Ontario, Canada', network_type='drive')
+
+    while True:
+        my_location = Point(MyLocation.lng, MyLocation.lat)
+        #nearest_node = ox.distance.nearest_nodes(G, X=my_location.x, Y=my_location.y)
+        nearest_edge = ox.distance.nearest_edges(G, X=my_location.x, Y=my_location.y)
+
+        edge_data = G.edges[nearest_edge]       # nearest edge on 'drive' map
+
+        road_name = edge_data.get('name', 'unknown')
+        speed_limit = edge_data.get('maxspeed', 50)
+
+        if (MyLocation.lat != 0) and (MyLocation.lng != 0):
+            print(f"Road name at location ({MyLocation.lat}, {MyLocation.lng}): {road_name}")
+            print(f"Speed limit at location ({MyLocation.lat}, {MyLocation.lng}): {speed_limit}")
+            if float(response_data_pid["SPEED"]) > float(speed_limit) + 10:
+                print(f"you went over speed limit {speed_limit} with speed: {response_data_pid["SPEED"]}")
+                # sends to backend
+                DataSend.sendSpeedTrigger(float(speed_limit), float(response_data_pid["SPEED"]), road_name, MyLocation.lat ,MyLocation.lng)
+
+        time.sleep(0.5)  # Pause for a while before checking the location again
+
 
 
 def main():
@@ -222,7 +297,9 @@ def main():
     location_thread = threading.Thread(target=MyLocation.my_location)
 
     # regular queue for reading PID values
-    longer_thread =  threading.Thread(target=regular_queue_PIDs)
+    #longer_thread =  threading.Thread(target=regular_queue_PIDs)
+
+    fuel_thread = threading.Thread(target=fuelConsumption)
 
     # Threads initiation
     pid_thread.start()
@@ -230,7 +307,8 @@ def main():
     execute_thread.start()
     gps_thread.start()
     location_thread.start()
-    longer_thread.start()
+    #longer_thread.start()
+    fuel_thread.start()
 
     # Awaiting their completion
     pid_thread.join()
@@ -238,7 +316,8 @@ def main():
     execute_thread.join()
     gps_thread.join()
     location_thread.join()
-    longer_thread.join()
+    #longer_thread.join()
+    fuel_thread.join()
     ######################################################################################
 
 

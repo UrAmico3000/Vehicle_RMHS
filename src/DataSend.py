@@ -20,8 +20,9 @@ def send_PID_values(PID):
 
 
 def send_DTC_values(DTC):
-    _data = DTC
+    _data = {}
     _data["username"] = "tirth"
+    _data["DTCs"] = DTC
     print(f'http://{api_url}/dtc/set and data is {_data}')
     dtc_list = json.dumps(_data, indent=4)
     response = requests.post(f'http://{api_url}/dtc/set', data=dtc_list, headers={"Content-Type": "application/json"})

@@ -3,7 +3,7 @@ import MyLocation
 import time
 # from MyLocation import lat, lng
 from shapely.geometry import Point
-import readOBDValues
+
 import DataSend
 
 
