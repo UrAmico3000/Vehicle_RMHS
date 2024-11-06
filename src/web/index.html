@@ -1,46 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .progress{
-  position: relative;
-  margin: 4px;
-  float:left;
-  text-align: center;
-  font-size: 50px;
-}
-.barOverflow{ /* Wraps the rotating .bar */
-  position: relative;
-  overflow: hidden; /* Comment this line to understand the trick */
-  width: 400px; height: 200px; /* Half circle (overflow) */
-  margin-bottom: -14px; /* bring the numbers up */
-}
-.bar{
-  position: absolute;
-  top: 0; left: 0;
-  width: 400px; height: 400px; /* full circle! */
-  border-radius: 50%;
-  box-sizing: border-box;
-  border: 20px solid #eee;     /* half gray, */
-  border-bottom-color: #0bf;  /* half azure */
-  border-right-color: #0bf;
-  transform: rotate(-315deg);
-}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .progress {
+      position: relative;
+      margin: 50px;
+      float: left;
+      text-align: center;
+      font-size: 50px;
+    }
+
+    .barOverflow {
+      /* Wraps the rotating .bar */
+      position: relative;
+      overflow: hidden;
+      /* Comment this line to understand the trick */
+      width: 400px;
+      height: 200px;
+      /* Half circle (overflow) */
+      margin-bottom: -14px;
+      /* bring the numbers up */
+    }
+
+    .bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 400px;
+      height: 400px;
+      /* full circle! */
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 20px solid #eee;
+      /* half gray, */
+      border-bottom-color: #0bf;
+      /* half azure */
+      border-right-color: #0bf;
+      transform: rotate(-315deg);
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .dashboard {
+      width: 800px;
+      height: 400px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .parameter {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .parameter:last-child {
+      border-bottom: none;
+    }
+    .container{
+      display:flex;
+      flex-direction: row;
+    }
+  </style>
 </head>
+
 <body>
   <script type="text/javascript" src="/eel.js"></script>
-    <div id="Value">Hello</div>
+  <div class="container">
     <div class="progress">
-        <div class="barOverflow">
-          <div class="bar" id ="bar"></div>
-        </div>
-        <span>100</span>%
+      <div class="barOverflow">
+        <div class="bar" id="bar"></div>
       </div>
-    <script src="main.js"></script>
-    
+      <span>100</span>%
+    </div>
+    <div class="dashboard">
+      <h1 class="title">OBD Information Dashboard</h1>
+      <div class="parameter">
+        <span>Engine Load (%)</span>
+        <span id="engineLoad">0</span>
+      </div>
+      <div class="parameter">
+        <span>Coolant Temperature (°C)</span>
+        <span id="coolantTemp">0</span>
+      </div>
+      <div class="parameter">
+        <span>RPM</span>
+        <span id="rpm">0</span>
+      </div>
+      <div class="parameter">
+        <span>Throttle Position (%)</span>
+        <span id="throttlePosition">0</span>
+      </div>
+      <div class="parameter">
+        <span>Fuel Level (%)</span>
+        <span id="fuelLevel">0</span>
+      </div>
+      <div class="parameter">
+        <span>Intake Air Temperature (°C)</span>
+        <span id="intakeAirTemp">0</span>
+      </div>
+    </div>
+  </div>
+  <script src="main.js"></script>
+
 </body>
+
 </html>

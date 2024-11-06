@@ -34,3 +34,16 @@ function updateValue(value) {
     bar.style.transform = "rotate(" + (45 + (value * 1.8)) + "deg)";
 }
 eel.expose(updateValue);
+
+
+
+function updateOBDData() {
+    document.getElementById('engineLoad').textContent = Math.floor(Math.random() * 100);
+    document.getElementById('coolantTemp').textContent = Math.floor(Math.random() * 120);
+    document.getElementById('rpm').textContent = Math.floor(Math.random() * 7000);
+    document.getElementById('throttlePosition').textContent = Math.floor(Math.random() * 100);
+    document.getElementById('fuelLevel').textContent = Math.floor(Math.random() * 100);
+    document.getElementById('intakeAirTemp').textContent = Math.floor(Math.random() * 50);
+}
+
+setInterval(updateOBDData, 1000); // Update every 1 second
